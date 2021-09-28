@@ -88,17 +88,15 @@ func handleOutput(ctx context.Context,client *mixin.Client,output *mixin.Multisi
 		return nil
 	}
 
-	sig, err := client.CreateMultisig(ctx, mixin.MultisigActionSign, output.SignedTx)
+	tx,err := mixin.TransactionFromRaw(output.SignedTx)
 	if err != nil {
-		return fmt.Errorf("CreateMultisig: %w",err)
+		return fmt.Errorf("TransactionFromRaw: %w",err)
 	}
 
-	if len(sig.Signers) < int(sig.Threshold) {
-		return nil
-	}
-
-	if _,err := client.SendRawTransaction(ctx,sig.RawTransaction);err != nil {
-		return fmt.Errorf("SendRawTransaction: %w",err)
+	if tx.AggregatedSignature != nil {
+		if _, err := client.SendRawTransaction(ctx, output.SignedTx); err != nil {
+			return fmt.Errorf("SendRawTransaction: %w", err)
+		}
 	}
 
 	return nil
