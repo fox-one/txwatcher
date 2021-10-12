@@ -67,7 +67,7 @@ func main() {
 		select {
 		case <-ctx.Done():
 			return
-		case <-time.After(time.Second):
+		case <-time.After(100 * time.Millisecond):
 			outputs,err := client.ReadMultisigs(ctx,offset,limit)
 			if err != nil {
 				log.Println("ReadMultisigs",err)
