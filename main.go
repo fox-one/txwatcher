@@ -16,6 +16,7 @@ import (
 
 var (
 	configPath = flag.String("config","","keystore path")
+	loop = flag.Bool("loop",false,"run loop")
 )
 
 func loadKeystore() (*mixin.Keystore,error) {
@@ -57,6 +58,8 @@ func main() {
 	offset := time.Unix(0,0)
 	const limit = 500
 
+	log.Println("[TxWatch] start for client",client.ClientID)
+
 	for {
 		select {
 		case <-ctx.Done():
@@ -77,6 +80,10 @@ func main() {
 			}
 
 			if len(outputs) < limit {
+				if ok := *loop;!ok {
+					return
+				}
+
 				offset = time.Unix(0,0)
 			}
 		}
