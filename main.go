@@ -59,6 +59,9 @@ func main() {
 	const limit = 500
 
 	log.Println("[TxWatch] start for client",client.ClientID)
+	defer func() {
+		log.Println("[TxWatch] end for client",client.ClientID)
+	}()
 
 	for {
 		select {
